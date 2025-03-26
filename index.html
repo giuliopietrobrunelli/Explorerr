@@ -28,20 +28,18 @@
     <!-- views ============================================= -->
 
     <!-- scrollable content -->
-    <div id="scroll-view" class="">
-
-    </div>
+    <div id="scroll-view" class=""></div>
 
     <!-- footer ============================================ -->
 
     <!-- pages indicators -->
     <div id="footer">
 
-        <i class="" data-feather="search" id="search-page"></i>
-        <i class="" data-feather="help-circle" id="quiz-page"></i>
-        <i class="active" data-feather="globe" id="explore-page"></i>
-        <i class="" data-feather="book-open" id="collections-page"></i>
-        <i class="" data-feather="user" id="user-page"></i>
+        <i data-feather="search" id="search-page" class=""></i>
+        <i data-feather="help-circle" id="quiz-page" class=""></i>
+        <i data-feather="globe" id="explore-page" class="active"></i>
+        <i data-feather="book-open" id="collections-page" class=""></i>
+        <i data-feather="user" id="user-page" class=""></i>
 
     </div>
     
@@ -49,7 +47,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
 
-
+<!-- app script -->
 <script>
 
 class ExplorerApp {
@@ -236,6 +234,7 @@ class ExplorerApp {
         wikiLink.className = 'article-wikiDirectLink';
         wikiLink.href = article.articleUrl;
         wikiLink.textContent = 'Leggi su Wikipedia';
+        wikiLink.target = '_blank'; // Aggiunto target blank
         verticalParagraphContainer.appendChild(wikiLink);
 
         articleInfos.appendChild(verticalParagraphContainer);
@@ -256,17 +255,55 @@ class ExplorerApp {
         likeAction.appendChild(likeCount);
         articleActions.appendChild(likeAction);
 
-        // Save action
-        const saveAction = document.createElement('div');
-        saveAction.className = 'article-save article-action';
-        const bookmarkIcon = document.createElement('i');
-        bookmarkIcon.setAttribute('data-feather', 'bookmark');
-        const saveCount = document.createElement('span');
-        saveCount.className = 'article-save-num';
-        saveCount.textContent = '230k';
-        saveAction.appendChild(bookmarkIcon);
-        saveAction.appendChild(saveCount);
-        articleActions.appendChild(saveAction);
+        // Share action
+        const shareAction = document.createElement('div');
+        shareAction.className = 'article-share article-action';
+        const shareIcon = document.createElement('i');
+        shareIcon.setAttribute('data-feather', 'share-2');
+        const shareCount = document.createElement('span');
+        shareCount.className = 'article-share-num';
+        shareCount.textContent = '125k';
+        shareAction.appendChild(shareIcon);
+        shareAction.appendChild(shareCount);
+        articleActions.appendChild(shareAction);
+
+        // Aggiungiamo l'event listener per la condivisione
+        shareAction.addEventListener('click', async () => {
+            try {
+                if (navigator.share) {
+                    // Utilizziamo l'API Web Share se disponibile
+                    await navigator.share({
+                        title: article.title,
+                        text: article.summary,
+                        url: article.articleUrl
+                    });
+                } else {
+                    // Fallback: copiamo il link negli appunti
+                    await navigator.clipboard.writeText(article.articleUrl);
+                    
+                    // Mostriamo un feedback all'utente
+                    const feedback = document.createElement('div');
+                    feedback.textContent = 'Link copiato!';
+                    feedback.style.position = 'fixed';
+                    feedback.style.bottom = '20px';
+                    feedback.style.left = '50%';
+                    feedback.style.transform = 'translateX(-50%)';
+                    feedback.style.backgroundColor = 'var(--secondary)';
+                    feedback.style.color = 'white';
+                    feedback.style.padding = '10px 20px';
+                    feedback.style.borderRadius = '5px';
+                    feedback.style.zIndex = '1000';
+                    
+                    document.body.appendChild(feedback);
+                    
+                    setTimeout(() => {
+                        feedback.remove();
+                    }, 2000);
+                }
+            } catch (error) {
+                console.error('Errore durante la condivisione:', error);
+            }
+        });
 
         articleInfos.appendChild(articleActions);
         scrollViewContent.appendChild(articleInfos);
@@ -309,7 +346,7 @@ class ExplorerApp {
                 easing: 'easeOutBack',
             });
 
-            svgIcon.style.fill = "var(--red)";
+            svgIcon.style.fill = "var(--red-contrast)";
             svgIcon.style.stroke = "var(--red)";
             likeNum.style.color = "var(--red-light)";
 
@@ -331,7 +368,7 @@ class ExplorerApp {
                 easing: 'easeOutBack',
             });
 
-            svgIcon.style.fill = "var(--secondary)";
+            svgIcon.style.fill = "none";
             svgIcon.style.stroke = "var(--secondary)";
             likeNum.style.color = "var(--secondary-3)";
 

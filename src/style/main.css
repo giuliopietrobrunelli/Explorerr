@@ -33,6 +33,7 @@
 
     
     --red  : hsl(0, 68%, 53%);
+    --red-contrast  : hsl(0, 62%, 45%);
     --red-light  : hsla(0, 100%, 76%, 60%);
 
     /* fonts */
@@ -139,7 +140,8 @@ body {
 }
 
     .scroll-view-content {
-        position: relative; display: flex; flex-direction: column; justify-content: center; align-items: start;
+        position: relative; display: flex; flex-direction: column; justify-content: center; align-items: center;
+        /* width: 100%; height: fit-content; min-height: 100vh; */
         width: 100%; height: fit-content; min-height: 100vh;
         gap: 30px;
 
@@ -164,7 +166,7 @@ body {
         .article-infos {
             width: 100%; height: fit-content;
             display: flex; align-items: center; justify-content: center;
-            gap: 20px;
+            gap: 20px; padding-bottom: 40px;
         }
 
             .article-tags {
