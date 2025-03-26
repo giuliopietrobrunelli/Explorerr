@@ -141,7 +141,7 @@ body {
     .scroll-view-content {
         position: relative; display: flex; flex-direction: column; justify-content: center; align-items: start;
         width: 100%; height: fit-content; min-height: 100vh;
-        gap: 30px; transform: translateY(-40px);
+        gap: 30px;
 
         scroll-snap-align: start;
         scroll-snap-stop: always;
