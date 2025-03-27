@@ -256,7 +256,16 @@ body {
         width: 30px; height: auto;
         color: var(--blur-text);
         padding: 8px; border-radius: 4px;
+        transition: all ease .2s;
+        cursor: pointer;
     }
     #footer .feather.active{
         background-color: var(--blur-bg);
     }
+
+.feedback {
+    color: var(--blur-text);
+    background-color: var(--blur-bg);
+    font-family: var(--dmsans);
+    font-size: var(--text);
+}
