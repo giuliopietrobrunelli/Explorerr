@@ -15,8 +15,8 @@
 
     <!-- navbar ============================================ -->
 
-    <!-- tabs indicators -->
-    <div id="navbar" data-page-viewing="explorer">
+    <!-- Explorer — tabs indicators -->
+    <div id="explorer-navbar" class="navbar hidden" data-page="explore-page" data-page-viewing="explorer-tab">
 
         <span id="explore-tab" class="tab-indicator active">Esplora</span>
         
@@ -26,18 +26,98 @@
         
     </div>
 
+    <!-- User Profile — tabs indicators -->
+    <div id="user-profile-navbar" class="navbar" data-page="user-page" data-page-viewing="profile-tab">
+
+        <span id="profile-tab" class="tab-indicator active">Il tuo profilo</span>
+        
+        <div class="divider vertical"></div>
+        
+        <span id="settings-tab" class="tab-indicator">Impostazioni</span>
+        
+    </div>
+
     <!-- views ============================================= -->
 
     <!-- scrollable content -->
-    <div id="scroll-view" data-page="explore-page" class=""></div>
+    <div id="scroll-view" data-page="explore-page" class="hidden"></div>
 
     <!-- know more article -->
     <div id="know-more-view" data-page="know-more-page" class="hidden"></div>
     
     <!-- user profile -->
-    <div id="user-profile-view" data-page="user-page" class="hidden">
+    <div id="user-profile-view" data-page="user-page" class="">
 
 
+        <!-- header -->
+        <div class="profile-infos">
+
+            <!-- pp and username -->
+            <div class="profile-identity">
+
+                <div class="profile-picture" data-request="profile-picture"></div>
+
+                <span class="profile-name" data-request="profile-name">Giulio Brunelli</span>
+
+                <span class="profile-username" data-request="profile-username">@giuliopietrobrunelli</span>
+
+            </div>
+            
+            <!-- followers and following -->
+            <div class="profile-follows">
+
+                <span class="tab-indicator"><span class="bold">22</span> FOLLOWERS</span>
+        
+                <div class="divider vertical"></div>
+                
+                <span class="tab-indicator"><span class="bold">11</span> FOLLOWING</span>
+
+            </div>
+
+            <!-- profile statistics -->
+            <div class="profile-statistics">
+
+                <!-- saved articles -->
+                <div class="profile-stat">
+
+                    <i data-feather="book-open"></i>
+                    <span class="small-text" data-request="profile-saved-articles">150</span>
+
+                </div>
+
+                <!-- saved words -->
+                <div class="profile-stat">
+
+                    <i data-feather="type"></i>
+                    <span class="small-text" data-request="profile-saved-words">120</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- divider -->
+        <div class="divider"></div>
+
+        <span class="general-text">Categorie preferite</span>
+
+        <!-- categories -->
+        <div class="categories-container">
+
+            <div class="categories-carousel">
+
+                <div class="category" style="background-image: url(/src/images/category00004.png);"><span class="text">Informatica</span></div>
+                <div class="category" style="background-image: url(/src/images/category00003.png);"><span class="text">Fisica</span></div>
+                <div class="category" style="background-image: url(/src/images/category00002.webp);"><span class="text">Natura</span></div>
+                <div class="category" style="background-image: url(/src/images/category00001.webp);"><span class="text">Geografia</span></div>
+                <div class="category" style="background-image: url(/src/images/category00006.png);"><span class="text">Sport</span></div>
+                <div class="category" style="background-image: url(/src/images/category00007.png);"><span class="text">Scienza</span></div>
+                <div class="category" style="background-image: url(/src/images/category00005.png);"><span class="text">Filosofia</span></div>
+
+            </div>
+
+        </div>
 
     </div>
 
@@ -48,9 +128,9 @@
 
         <i data-feather="search" id="search-page" class="page-indicator"></i>
         <i data-feather="help-circle" id="quiz-page" class="page-indicator"></i>
-        <i data-feather="globe" id="explore-page" class="page-indicator active"></i>
+        <i data-feather="globe" id="explore-page" class="page-indicator"></i>
         <i data-feather="book-open" id="collections-page" class="page-indicator"></i>
-        <i data-feather="user" id="user-page" class="page-indicator"></i>
+        <i data-feather="user" id="user-page" class="page-indicator active"></i>
 
     </div>
     
@@ -69,7 +149,7 @@
         const footerIcons = document.querySelectorAll('.page-indicator');
         
         // Seleziona tutte le viste/pagine
-        const views = document.querySelectorAll('#scroll-view, #know-more-view');
+        const views = document.querySelectorAll('#scroll-view, #know-more-view, #user-profile-view, #user-profile-navbar, #explorer-navbar');
         
         // Aggiungi un event listener a ciascuna icona
         footerIcons.forEach(icon => {
@@ -85,25 +165,55 @@
                 // Aggiungi la classe 'active' all'icona cliccata
                 this.classList.add('active');
                 
-                // Nascondi tutte le viste aggiungendo la classe 'hidden'
+                // Nascondi tutte le viste
                 views.forEach(view => {
-                    view.classList.add('hidden');
-                    console.log('View nascosta:', view.id, 'data-page:', view.getAttribute('data-page'));
+                    if (!view.classList.contains('hidden')) {
+                        anime({
+                            targets: view,
+                            opacity: [1, 0],
+                            translateX: [0, -20],
+                            duration: 200,
+                            easing: 'easeInQuad',
+                            complete: () => {
+                                view.classList.add('hidden');
+                                // Reset dello stile dopo l'animazione
+                                view.style.opacity = '';
+                                view.style.transform = '';
+                            }
+                        });
+                    }
                 });
                 
                 // Mostra la vista corrispondente all'icona cliccata
-                const targetView = document.querySelector(`[data-page="${clickedIconId}"]`);
-                console.log('Target view trovata:', targetView);
-                
-                if (targetView) {
-                    targetView.classList.remove('hidden');
-                    console.log('View mostrata:', targetView.id);
-                } else {
-                    // Se non esiste una vista con data-page corrispondente, usa scroll-view come default
-                    const defaultView = document.querySelector('#scroll-view');
-                    defaultView.classList.remove('hidden');
-                    console.log('Nessuna pagina trovata, mostrato default view');
-                }
+                const targetView = document.querySelectorAll(`[data-page="${clickedIconId}"]`);
+
+                setTimeout(() => {
+                    targetView.forEach(view => {
+                        if (view) {
+                            // Prima rimuoviamo hidden e impostiamo l'opacità
+                            view.classList.remove('hidden');
+                            view.style.opacity = '0';
+                            view.style.transform = 'translateX(20px)';
+                            
+                            anime({
+                                targets: view,
+                                opacity: [0, 1],
+                                translateX: [20, 0],
+                                duration: 300,
+                                easing: 'easeOutQuad',
+                                complete: () => {
+                                    // Reset dello stile dopo l'animazione
+                                    view.style.opacity = '';
+                                    view.style.transform = '';
+                                }
+                            });
+                        } else {
+                            const defaultView = document.querySelector('#scroll-view');
+                            defaultView.classList.remove('hidden');
+                        }
+                    });
+                }, 200); // Aspettiamo che l'animazione di uscita sia completata
+            
             });
         });
         
