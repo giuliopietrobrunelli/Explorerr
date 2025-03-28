@@ -40,13 +40,13 @@
     <!-- views ============================================= -->
 
     <!-- scrollable content -->
-    <div id="scroll-view" data-page="explore-page" class="hidden"></div>
+    <div id="scroll-view" data-page="explore-page" class=""></div>
 
     <!-- know more article -->
     <div id="know-more-view" data-page="know-more-page" class="hidden"></div>
     
     <!-- user profile -->
-    <div id="user-profile-view" data-page="user-page" class="">
+    <div id="user-profile-view" data-page="user-page" class="hidden">
 
 
         <!-- header -->
@@ -128,9 +128,9 @@
 
         <i data-feather="search" id="search-page" class="page-indicator"></i>
         <i data-feather="help-circle" id="quiz-page" class="page-indicator"></i>
-        <i data-feather="globe" id="explore-page" class="page-indicator"></i>
+        <i data-feather="globe" id="explore-page" class="page-indicator active"></i>
         <i data-feather="book-open" id="collections-page" class="page-indicator"></i>
-        <i data-feather="user" id="user-page" class="page-indicator active"></i>
+        <i data-feather="user" id="user-page" class="page-indicator"></i>
 
     </div>
     
@@ -168,19 +168,40 @@
                 // Nascondi tutte le viste
                 views.forEach(view => {
                     if (!view.classList.contains('hidden')) {
-                        anime({
-                            targets: view,
-                            opacity: [1, 0],
-                            translateX: [0, -20],
-                            duration: 200,
-                            easing: 'easeInQuad',
-                            complete: () => {
+                        // Se è scroll-view, anima solo il contenuto visibile
+                        if (view.id === 'scroll-view') {
+                            const visibleContent = view.querySelector('.scroll-view-content');
+                            if (visibleContent) {
+                                anime({
+                                    targets: visibleContent,
+                                    opacity: [1, 0],
+                                    translateX: [0, -50],
+                                    duration: 250,
+                                    easing: 'easeInQuad',
+                                    complete: () => {
+                                        view.classList.add('hidden');
+                                        visibleContent.style.opacity = '';
+                                        visibleContent.style.transform = '';
+                                    }
+                                });
+                            } else {
                                 view.classList.add('hidden');
-                                // Reset dello stile dopo l'animazione
-                                view.style.opacity = '';
-                                view.style.transform = '';
                             }
-                        });
+                        } else {
+                            // Per altre view, mantieni l'animazione originale
+                            anime({
+                                targets: view,
+                                opacity: [1, 0],
+                                translateX: [0, -50],
+                                duration: 250,
+                                easing: 'easeInQuad',
+                                complete: () => {
+                                    view.classList.add('hidden');
+                                    view.style.opacity = '';
+                                    view.style.transform = '';
+                                }
+                            });
+                        }
                     }
                 });
                 
@@ -190,29 +211,50 @@
                 setTimeout(() => {
                     targetView.forEach(view => {
                         if (view) {
-                            // Prima rimuoviamo hidden e impostiamo l'opacità
                             view.classList.remove('hidden');
-                            view.style.opacity = '0';
-                            view.style.transform = 'translateX(20px)';
                             
-                            anime({
-                                targets: view,
-                                opacity: [0, 1],
-                                translateX: [20, 0],
-                                duration: 300,
-                                easing: 'easeOutQuad',
-                                complete: () => {
-                                    // Reset dello stile dopo l'animazione
-                                    view.style.opacity = '';
-                                    view.style.transform = '';
+                            // Se è scroll-view, anima solo il contenuto visibile
+                            if (view.id === 'scroll-view') {
+                                const visibleContent = view.querySelector('.scroll-view-content');
+                                if (visibleContent) {
+                                    visibleContent.style.opacity = '0';
+                                    visibleContent.style.transform = 'translateX(20px)';
+                                    
+                                    anime({
+                                        targets: visibleContent,
+                                        opacity: [0, 1],
+                                        translateX: [20, 0],
+                                        duration: 300,
+                                        easing: 'easeOutQuad',
+                                        complete: () => {
+                                            visibleContent.style.opacity = '';
+                                            visibleContent.style.transform = '';
+                                        }
+                                    });
                                 }
-                            });
+                            } else {
+                                // Per altre view, mantieni l'animazione originale
+                                view.style.opacity = '0';
+                                view.style.transform = 'translateX(20px)';
+                                
+                                anime({
+                                    targets: view,
+                                    opacity: [0, 1],
+                                    translateX: [20, 0],
+                                    duration: 300,
+                                    easing: 'easeOutQuad',
+                                    complete: () => {
+                                        view.style.opacity = '';
+                                        view.style.transform = '';
+                                    }
+                                });
+                            }
                         } else {
                             const defaultView = document.querySelector('#scroll-view');
                             defaultView.classList.remove('hidden');
                         }
                     });
-                },150); // Aspettiamo che l'animazione di uscita sia completata
+                }, 200);
             
             });
         });
